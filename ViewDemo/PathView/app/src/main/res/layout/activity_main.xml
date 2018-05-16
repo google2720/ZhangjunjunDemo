@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="android.com.path.MainActivity">
+
+
+    <android.com.path.PathView
+        android:id="@+id/pathView"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+
+    />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/lightSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="40px"
+        android:layout_marginTop="50px"
+
+    />
+
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/nightSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="40px"
+        android:layout_marginTop="50px"
+
+    />
+
+
+</LinearLayout>

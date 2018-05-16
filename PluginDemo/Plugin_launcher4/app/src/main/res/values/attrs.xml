@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="SlideGroup">
+        <attr name="pageRow" format="integer" />
+        <attr name="pageLine" format="integer" />
+        <attr name="cardWidth" format="integer|dimension" />
+        <attr name="cardHeight" format="integer|dimension" />
+        <attr name="DragPageIndicator" format="reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="ClickView">
+        <attr name="pressedTextColor" format="reference|color" />
+        <attr name="normalTextColor" format="reference|color" />
+        <attr name="disableTextColor" format="reference|color" />
+        <attr name="pressedBackground" format="reference|color" />
+        <attr name="normalBackground" format="reference|color" />
+        <attr name="disableBackground" format="reference|color" />
+    </declare-styleable>
+
+    <item type="id" name="page_indicator">false</item>
+
+
+</resources>

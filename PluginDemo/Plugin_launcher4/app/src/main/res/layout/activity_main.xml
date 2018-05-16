@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:slide="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="android.com.plugin_launcher.MainActivity">
+
+    <include android:id="@+id/page_indicator" layout="@layout/page_indicator"/>
+
+    <android.com.plugin_launcher.slidegroup.SlideGroup
+        android:id="@+id/sl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="23px"
+        slide:DragPageIndicator="@id/page_indicator"
+        slide:cardHeight="@dimen/home_card_height"
+        slide:cardWidth="@dimen/home_card_width"
+        slide:pageLine="@integer/home_page_line"
+        slide:pageRow="@integer/home_page_row">
+
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+
+        <ImageView android:layout_width="match_parent"
+                   android:background="@drawable/car_bg"
+                   android:layout_height="match_parent"/>
+
+    </android.com.plugin_launcher.slidegroup.SlideGroup>
+
+</FrameLayout>
