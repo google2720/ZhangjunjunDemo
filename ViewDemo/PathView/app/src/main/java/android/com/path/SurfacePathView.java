@@ -1,15 +1,19 @@
 package android.com.path;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import java.util.Arrays;
 
@@ -17,12 +21,17 @@ import java.util.Arrays;
  * Created by zhangjunjun on 2018/4/28.
  */
 
-public class PathView extends View {
+public class SurfacePathView extends SurfaceView implements SurfaceHolder.Callback,Runnable {
 
 
     private int numPoints;
     private float[] mData;
     static final float PRECISION = 1f;
+
+    private SurfaceHolder mSurfaceHolder;
+    private ValueAnimator mValueAnimator;
+    private long mAnimationDuration, mAnimationStartDelay;
+    private boolean isAnimationStarted;
 
     private Paint mPaint;
     private int mLightLineColor;
@@ -30,16 +39,18 @@ public class PathView extends View {
     private Keyframes mKeyframes;
     private float[] mLightPoints;
     private float[] mDarkPoints;
+    private boolean isDrawing;
 
-    public PathView(Context context) {
+
+    public SurfacePathView(Context context) {
         this(context,null);
     }
 
-    public PathView(Context context, @Nullable AttributeSet attrs) {
+    public SurfacePathView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public PathView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SurfacePathView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -55,6 +66,59 @@ public class PathView extends View {
         //默认颜色
         mLightLineColor = Color.RED;
         mDarkLineColor = Color.DKGRAY;
+
+        setZOrderOnTop(true);
+        mSurfaceHolder = getHolder();
+        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
+        mSurfaceHolder.addCallback(this);
+
+        mAnimationDuration = 6000L;
+        mAnimationStartDelay = 2000L;
+    }
+
+
+
+
+
+    public void setAnimationDuration(long duration) {
+        mAnimationDuration = duration;
+    }
+
+    public void setStartDelay(long delay) {
+        mAnimationStartDelay = delay;
+    }
+
+    public void startAnimation() {
+        if (!isAnimationStarted) {
+            isAnimationStarted = true;
+            mValueAnimator = ValueAnimator.ofFloat(-1.4F, 1F).setDuration(mAnimationDuration);
+            mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
+            mValueAnimator.setStartDelay(mAnimationStartDelay);
+            mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float currentProgress = (float) animation.getAnimatedValue();
+                    float lightLineStartProgress, lightLineEndProgress;
+                    float darkLineStartProgress, darkLineEndProgress;
+                    darkLineEndProgress = currentProgress;
+                    darkLineStartProgress = lightLineStartProgress = darkLineEndProgress + 1.4F;
+                    lightLineEndProgress = darkLineEndProgress + 1;
+                    if (lightLineEndProgress < 0) {
+                        lightLineEndProgress = 0;
+                    }
+                    if (darkLineEndProgress < 0) {
+                        darkLineEndProgress = 0;
+                    }
+                    if (lightLineStartProgress > 1) {
+                        darkLineStartProgress = lightLineStartProgress = 1;
+                    }
+                    setLightLineProgress(lightLineStartProgress, lightLineEndProgress);
+                    setDarkLineProgress(darkLineStartProgress, darkLineEndProgress);
+                }
+            });
+            mValueAnimator.start();
+        }
     }
 
 
@@ -93,6 +157,54 @@ public class PathView extends View {
         invalidate();
     }
 
+    private void restart() {
+        isDrawing = true;
+        new Thread(this).start();
+    }
+    private void stop() {
+        isDrawing = false;
+        if (mValueAnimator != null && mValueAnimator.isRunning())
+            mValueAnimator.cancel();
+    }
+
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        restart();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        stop();
+    }
+
+
+    private void startDraw(Canvas canvas) {
+        mPaint.setColor(mDarkLineColor);
+        if (mDarkPoints != null) {
+            canvas.drawPoints(mDarkPoints, mPaint);
+        }
+        mPaint.setColor(mLightLineColor);
+        if (mLightPoints != null) {
+            canvas.drawPoints(mLightPoints, mPaint);
+        }
+    }
+
+    @Override
+    public void run() {
+        while (isDrawing) {
+            Canvas canvas = mSurfaceHolder.lockCanvas();
+            if (canvas == null) return;
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            startDraw(canvas);
+            mSurfaceHolder.unlockCanvasAndPost(canvas);
+        }
+    }
 
 
     private static class Keyframes {
@@ -153,21 +265,6 @@ public class PathView extends View {
         }
     }
 
-
-
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        mPaint.setColor(mDarkLineColor);
-        if (mDarkPoints != null) {
-            canvas.drawPoints(mDarkPoints, mPaint);
-        }
-
-        mPaint.setColor(mLightLineColor);
-        if (mLightPoints != null) {
-            canvas.drawPoints(mLightPoints, mPaint);
-        }
-    }
 
 
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,10 +9,11 @@
     tools:context="android.com.path.MainActivity">
 
 
-    <android.com.path.PathView
+    <android.com.path.SurfacePathView
         android:id="@+id/pathView"
         android:layout_width="match_parent"
-        android:layout_height="200px"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60px"
 
     />
 
@@ -20,6 +21,9 @@
         android:id="@+id/lightSeekBar"
         android:layout_width="match_parent"
         android:layout_height="40px"
+        android:layout_gravity="bottom"
+        android:max="10"
+        android:layout_marginBottom="220px"
         android:layout_marginTop="50px"
 
     />
@@ -29,9 +33,12 @@
         android:id="@+id/nightSeekBar"
         android:layout_width="match_parent"
         android:layout_height="40px"
+        android:layout_gravity="bottom"
+        android:max="10"
+        android:layout_marginBottom="100px"
         android:layout_marginTop="50px"
 
     />
 
 
-</LinearLayout>
+</FrameLayout>
