@@ -88,10 +88,12 @@ public class SurfacePathView extends SurfaceView implements SurfaceHolder.Callba
         mAnimationStartDelay = delay;
     }
 
+    float lightLineStartProgress = 0, lightLineEndProgress;
+
     public void startAnimation() {
         if (!isAnimationStarted) {
             isAnimationStarted = true;
-            mValueAnimator = ValueAnimator.ofFloat(-1.4F, 1F).setDuration(mAnimationDuration);
+            mValueAnimator = ValueAnimator.ofFloat(0F, 1F).setDuration(mAnimationDuration);
             mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
             mValueAnimator.setStartDelay(mAnimationStartDelay);
@@ -99,22 +101,19 @@ public class SurfacePathView extends SurfaceView implements SurfaceHolder.Callba
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float currentProgress = (float) animation.getAnimatedValue();
-                    float lightLineStartProgress, lightLineEndProgress;
-                    float darkLineStartProgress, darkLineEndProgress;
-                    darkLineEndProgress = currentProgress;
-                    darkLineStartProgress = lightLineStartProgress = darkLineEndProgress + 1.4F;
-                    lightLineEndProgress = darkLineEndProgress + 1;
-                    if (lightLineEndProgress < 0) {
-                        lightLineEndProgress = 0;
+                    
+
+                    lightLineEndProgress = currentProgress;
+                    lightLineStartProgress = lightLineEndProgress - 0.5f;
+
+
+                    if(lightLineStartProgress<0){
+                        lightLineStartProgress = 0;
                     }
-                    if (darkLineEndProgress < 0) {
-                        darkLineEndProgress = 0;
-                    }
-                    if (lightLineStartProgress > 1) {
-                        darkLineStartProgress = lightLineStartProgress = 1;
-                    }
-                    setLightLineProgress(lightLineStartProgress, lightLineEndProgress);
-                    setDarkLineProgress(darkLineStartProgress, darkLineEndProgress);
+
+
+                    setLightLineProgress(lightLineStartProgress,lightLineEndProgress);
+                    
                 }
             });
             mValueAnimator.start();
@@ -154,13 +153,16 @@ public class SurfacePathView extends SurfaceView implements SurfaceHolder.Callba
             mLightPoints = mKeyframes.getRangeValue(start, end);
         else
             mDarkPoints = mKeyframes.getRangeValue(start, end);
-        invalidate();
     }
+
 
     private void restart() {
         isDrawing = true;
+        //通过线程不停的绘制
         new Thread(this).start();
     }
+
+
     private void stop() {
         isDrawing = false;
         if (mValueAnimator != null && mValueAnimator.isRunning())
@@ -205,6 +207,8 @@ public class SurfacePathView extends SurfaceView implements SurfaceHolder.Callba
             mSurfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
+
+
 
 
     private static class Keyframes {
